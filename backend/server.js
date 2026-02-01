@@ -30,12 +30,16 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'Treen.nation API is running' });
 });
 
-// Serve static files AFTER API routes
+// Serve static files AFTER API routes (but not for /api paths)
+app.use((req, res, next) => {
+    if (req.path.startsWith('/api/')) {
+        return next();
+    }
+    express.static(path.join(__dirname, '..'))(req, res, next);
+});
+
 app.use('/uploads', express.static('uploads'));
 app.use('/images', express.static(path.join(__dirname, '..')));
-app.use(express.static(path.join(__dirname, '..'), {
-    index: false
-}));
 
 // Catch-all route for frontend (SPA routing)
 app.get('*', (req, res) => {
