@@ -35,23 +35,6 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'Treen.nation API is running' });
 });
 
-// Root endpoint
-app.get('/', (req, res) => {
-    res.json({ 
-        message: 'Treen.nation API',
-        version: '1.0.0',
-        endpoints: {
-            health: '/api/health',
-            products: '/api/products',
-            orders: '/api/orders',
-            cart: '/api/cart',
-            contact: '/api/contact',
-            services: '/api/services'
-        }
-    });
-});
-
-// API routes should be before catch-all
 // Catch-all route for frontend (SPA routing)
 app.get('*', (req, res) => {
     // If request is for API, return 404
