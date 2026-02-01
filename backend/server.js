@@ -16,8 +16,10 @@ app.use('/uploads', express.static('uploads'));
 const path = require('path');
 app.use('/images', express.static(path.join(__dirname, '..')));
 
-// Serve frontend static files
-app.use(express.static(path.join(__dirname, '..')));
+// Serve frontend static files (HTML, CSS, JS)
+app.use(express.static(path.join(__dirname, '..'), {
+    index: false // Don't auto-serve index.html, we'll handle it manually
+}));
 
 // Database initialization
 const db = require('./config/database');
@@ -42,7 +44,14 @@ app.get('*', (req, res) => {
         return res.status(404).json({ error: 'API endpoint not found' });
     }
     // Otherwise serve index.html for frontend routing
-    res.sendFile(path.join(__dirname, '..', 'index.html'));
+    const indexPath = path.join(__dirname, '..', 'index.html');
+    console.log('Serving index.html from:', indexPath);
+    res.sendFile(indexPath, (err) => {
+        if (err) {
+            console.error('Error serving index.html:', err);
+            res.status(500).json({ error: 'Could not load frontend', path: indexPath });
+        }
+    });
 });
 
 // Error handling middleware
