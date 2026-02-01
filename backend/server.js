@@ -12,11 +12,17 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Request logger
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path}`);
+    next();
+});
+
 // Database initialization
 const db = require('./config/database');
 db.initialize();
 
-// ============ API ROUTES ONLY ============
+// ============ API ROUTES FIRST ============
 app.use('/api/products', require('./routes/products'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/cart', require('./routes/cart'));
@@ -27,63 +33,9 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'Treen.nation API is running' });
 });
 
-// ============ STATIC FILES ============
-// Serve images
-app.use('/images', express.static(__dirname));
-
-// Serve JS files
-app.get('/js/:file', (req, res) => {
-    res.sendFile(path.join(__dirname, 'js', req.params.file));
-});
-
-// Serve CSS
-app.get('/styles.css', (req, res) => {
-    res.sendFile(path.join(__dirname, 'styles.css'));
-});
-
-// Serve HTML pages
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-app.get('/shop.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'shop.html'));
-});
-
-app.get('/services.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'services.html'));
-});
-
-app.get('/about.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'about.html'));
-});
-
-app.get('/contact.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'contact.html'));
-});
-
-app.get('/cart.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'cart.html'));
-});
-
-app.get('/order.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'order.html'));
-});
-
-// Serve PNG/JPEG files from root
-app.get('/:file', (req, res, next) => {
-    const file = req.params.file;
-    if (file.match(/\.(png|jpg|jpeg|gif|svg)$/i)) {
-        res.sendFile(path.join(__dirname, file));
-    } else {
-        next();
-    }
-});
-
-// 404 for everything else
-app.use((req, res) => {
-    res.status(404).json({ error: 'Not found', path: req.path });
-});
+// ============ STATIC FILES (from parent folder) ============
+app.use(express.static(path.join(__dirname, '..')));
+app.use('/images', express.static(path.join(__dirname, '..')));
 
 // Error handling
 app.use((err, req, res, next) => {
@@ -97,6 +49,7 @@ app.use((err, req, res, next) => {
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`🌿 Treen.nation API running on http://0.0.0.0:${PORT}`);
+    console.log(`📁 Serving static files from: ${path.join(__dirname, '..')}`);
 });
 
 module.exports = app;
