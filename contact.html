@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - Treen.nation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,600;0,700;1,600&family=Young+Serif&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="main-header">
+        <div class="header-container">
+            <a href="index.html" class="logo">Treen.nation</a>
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav class="main-nav" id="mainNav">
+                <a href="about.html" class="nav-link">About</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="shop.html" class="nav-link">Shop</a>
+                <a href="contact.html" class="nav-link active">Contact</a>
+                <a href="order.html" class="nav-link">Order</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contact Content -->
+    <section class="contact-section">
+        <div class="contact-content">
+            <h1 class="contact-heading">Contact Us</h1>
+            <div class="contact-info">
+                <p class="contact-intro">Have questions, custom requests, or collaboration ideas? We would love to hear from you.</p>
+                <ul class="contact-details">
+                    <li>Email: hello@treennation.com</li>
+                    <li>Instagram: @treen.nation</li>
+                    <li>Response Time: 4-24 hours</li>
+                </ul>
+                <p class="contact-outro">Fill out our form or reach out through social media anytime.</p>
+            </div>
+        </div>
+
+        <div class="contact-image">
+            <img src="IMG_9247.PNG" alt="Treen logo sticker" class="logo-sticker">
+        </div>
+    </section>
+
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const mainNav = document.getElementById('mainNav');
+        
+        menuToggle.addEventListener('click', function() {
+            this.classList.toggle('active');
+            mainNav.classList.toggle('active');
+        });
+        
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                menuToggle.classList.remove('active');
+                mainNav.classList.remove('active');
+            });
+        });
+        
+        document.addEventListener('click', function(event) {
+            if (!mainNav.contains(event.target) && !menuToggle.contains(event.target)) {
+                menuToggle.classList.remove('active');
+                mainNav.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
