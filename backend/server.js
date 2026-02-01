@@ -5,60 +5,87 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const path = require('path');
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Path setup
-const path = require('path');
-
 // Database initialization
 const db = require('./config/database');
 db.initialize();
 
-// API Routes - MUST BE BEFORE static files
+// ============ API ROUTES ONLY ============
 app.use('/api/products', require('./routes/products'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/cart', require('./routes/cart'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/services', require('./routes/services'));
 
-// Health check
 app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'Treen.nation API is running' });
 });
 
-// Serve static files AFTER API routes (but not for /api paths)
-app.use((req, res, next) => {
-    if (req.path.startsWith('/api/')) {
-        return next();
-    }
-    express.static(path.join(__dirname, '..'))(req, res, next);
-});
-
-app.use('/uploads', express.static('uploads'));
+// ============ STATIC FILES ============
+// Serve images
 app.use('/images', express.static(path.join(__dirname, '..')));
 
-// Catch-all route for frontend (SPA routing)
-app.get('*', (req, res) => {
-    // If request is for API, return 404
-    if (req.path.startsWith('/api/')) {
-        return res.status(404).json({ error: 'API endpoint not found' });
-    }
-    // Otherwise serve index.html for frontend routing
-    const indexPath = path.join(__dirname, '..', 'index.html');
-    console.log('Serving index.html from:', indexPath);
-    res.sendFile(indexPath, (err) => {
-        if (err) {
-            console.error('Error serving index.html:', err);
-            res.status(500).json({ error: 'Could not load frontend', path: indexPath });
-        }
-    });
+// Serve JS files
+app.get('/js/:file', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'js', req.params.file));
 });
 
-// Error handling middleware
+// Serve CSS
+app.get('/styles.css', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'styles.css'));
+});
+
+// Serve HTML pages
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
+
+app.get('/shop.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'shop.html'));
+});
+
+app.get('/services.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'services.html'));
+});
+
+app.get('/about.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'about.html'));
+});
+
+app.get('/contact.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'contact.html'));
+});
+
+app.get('/cart.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'cart.html'));
+});
+
+app.get('/order.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'order.html'));
+});
+
+// Serve PNG/JPEG files from root
+app.get('/:file', (req, res, next) => {
+    const file = req.params.file;
+    if (file.match(/\.(png|jpg|jpeg|gif|svg)$/i)) {
+        res.sendFile(path.join(__dirname, '..', file));
+    } else {
+        next();
+    }
+});
+
+// 404 for everything else
+app.use((req, res) => {
+    res.status(404).json({ error: 'Not found', path: req.path });
+});
+
+// Error handling
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ 
