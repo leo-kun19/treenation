@@ -7,3 +7,6 @@ database.sqlite
 .vscode/
 backend/database.sqlite
 backend/node_modules/
+
+# Personal files
+Form Skripsi/
