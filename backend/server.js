@@ -29,52 +29,52 @@ app.get('/api/health', (req, res) => {
 
 // ============ STATIC FILES ============
 // Serve images
-app.use('/images', express.static(path.join(__dirname, '..')));
+app.use('/images', express.static(__dirname));
 
 // Serve JS files
 app.get('/js/:file', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'js', req.params.file));
+    res.sendFile(path.join(__dirname, 'js', req.params.file));
 });
 
 // Serve CSS
 app.get('/styles.css', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'styles.css'));
+    res.sendFile(path.join(__dirname, 'styles.css'));
 });
 
 // Serve HTML pages
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'index.html'));
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.get('/shop.html', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'shop.html'));
+    res.sendFile(path.join(__dirname, 'shop.html'));
 });
 
 app.get('/services.html', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'services.html'));
+    res.sendFile(path.join(__dirname, 'services.html'));
 });
 
 app.get('/about.html', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'about.html'));
+    res.sendFile(path.join(__dirname, 'about.html'));
 });
 
 app.get('/contact.html', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'contact.html'));
+    res.sendFile(path.join(__dirname, 'contact.html'));
 });
 
 app.get('/cart.html', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'cart.html'));
+    res.sendFile(path.join(__dirname, 'cart.html'));
 });
 
 app.get('/order.html', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'order.html'));
+    res.sendFile(path.join(__dirname, 'order.html'));
 });
 
 // Serve PNG/JPEG files from root
 app.get('/:file', (req, res, next) => {
     const file = req.params.file;
     if (file.match(/\.(png|jpg|jpeg|gif|svg)$/i)) {
-        res.sendFile(path.join(__dirname, '..', file));
+        res.sendFile(path.join(__dirname, file));
     } else {
         next();
     }

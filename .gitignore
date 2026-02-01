@@ -10,3 +10,12 @@ backend/node_modules/
 
 # Personal files
 Form Skripsi/
+
+# Don't ignore frontend files in backend folder
+!backend/*.html
+!backend/*.css
+!backend/*.js
+!backend/js/
+!backend/*.jpeg
+!backend/*.png
+!backend/*.PNG
