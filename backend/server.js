@@ -10,22 +10,15 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/uploads', express.static('uploads'));
 
-// Serve images from root directory
+// Path setup
 const path = require('path');
-app.use('/images', express.static(path.join(__dirname, '..')));
-
-// Serve frontend static files (HTML, CSS, JS)
-app.use(express.static(path.join(__dirname, '..'), {
-    index: false // Don't auto-serve index.html, we'll handle it manually
-}));
 
 // Database initialization
 const db = require('./config/database');
 db.initialize();
 
-// Routes
+// API Routes - MUST BE BEFORE static files
 app.use('/api/products', require('./routes/products'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/cart', require('./routes/cart'));
@@ -36,6 +29,13 @@ app.use('/api/services', require('./routes/services'));
 app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', message: 'Treen.nation API is running' });
 });
+
+// Serve static files AFTER API routes
+app.use('/uploads', express.static('uploads'));
+app.use('/images', express.static(path.join(__dirname, '..')));
+app.use(express.static(path.join(__dirname, '..'), {
+    index: false
+}));
 
 // Catch-all route for frontend (SPA routing)
 app.get('*', (req, res) => {
