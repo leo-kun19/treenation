@@ -16,6 +16,9 @@ app.use('/uploads', express.static('uploads'));
 const path = require('path');
 app.use('/images', express.static(path.join(__dirname, '..')));
 
+// Serve frontend static files
+app.use(express.static(path.join(__dirname, '..')));
+
 // Database initialization
 const db = require('./config/database');
 db.initialize();
@@ -46,6 +49,17 @@ app.get('/', (req, res) => {
             services: '/api/services'
         }
     });
+});
+
+// API routes should be before catch-all
+// Catch-all route for frontend (SPA routing)
+app.get('*', (req, res) => {
+    // If request is for API, return 404
+    if (req.path.startsWith('/api/')) {
+        return res.status(404).json({ error: 'API endpoint not found' });
+    }
+    // Otherwise serve index.html for frontend routing
+    res.sendFile(path.join(__dirname, '..', 'index.html'));
 });
 
 // Error handling middleware
